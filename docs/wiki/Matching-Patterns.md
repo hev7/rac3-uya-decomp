@@ -637,7 +637,7 @@ Each was confirmed by a function that now matches in the full build.
 - **`addu` operand order:** read back the field you just stored, `p->h0 = c; p->h2 = p->h0 + p->hE;` (`func_003A6C30`).
 - **A nested select's branch layout:** put the inner test's xor in its own block-local temporary, `else { s32 e = k ^ 0x259; m = e ? 0 : 8; }` (`func_003B8440`).
 - **The callee's return type again:** declaring `func_12A9F0` as `s32` instead of `void` fixed a `$v0`/`$v1` swap in a final 64-bit pack (`func_00393E90`; its sibling `func_00393A18` needs the same).
-- **An indexed loop with two increments**, `for (i = 0; i < n; i++, list++)`, matched where a single induction variable didn't (`func_003936A8`).
+- **An indexed loop with two increments**, `for (i = 0; i < n; i++, list++)`, matched where a single induction variable didn't (`func_003936A8`). A second index incremented in a call argument, `f(o, 0, i++)` next to loop counter `j`, is the same lever (`func_003B07B8`; using `j` there left 159 diffs).
 - **Integration note:** `tools/divs_nops.txt` is keyed by function. When a patch changes a function's `div.s` padding count, that line has to travel with the function; a stale count makes the function longer by 4 bytes per `nop` and shifts everything after it (`func_0037D200`, 2 to 1).
 - **Tool note:** `try_in_context.py` ignores `tools/localdecomp_flags.txt`, so an `@ps2as` candidate can only be checked in place once its `text_parts.txt` override exists.
 
@@ -732,6 +732,7 @@ Wrapping one statement or a range in `do { ... } while (0)` (or `for (;;) { ...;
 - **Stack slot order follows when a variable becomes addressable**, not its declaration: gcc 2.95 moves a scalar to the stack when it first sees `&x`, while arrays get their slot at the declaration. One `u8 cc[2]` array declared first, instead of two `u8` scalars, put the bytes at retail's 0x20/0x21 (`func_003C0188`, 198 to 62).
 - **Function-level locals for stack buffers.** Block-local arrays get separate slots in gcc 2.95; retail shares slots between cases or loops, so declare them once at the top (`func_003DCD08`, `func_00382458`, `func_003A4A78`).
 - **Inline helper parameters.** integrate.c copies every non-const formal into a fresh pseudo before the body, so the order of a `static __inline__` helper's formal parameters sets the schedule of those copies (`func_003EB728`, found by a climb over parameter orders).
+- **Float constants named as locals.** Two float constants stored into a stack struct, declared as initialised locals at the top (`f32 c1 = 0.572f;`, then `s.f1C = c1;`), gave retail's `$f` registers; writing the literals in the stores left 17 diffs, all `$f`/`$a` register numbers (`func_003B07B8`).
 
 ### Control flow, switches and loops
 
