@@ -26278,5 +26278,15 @@
     "flags_from": "func_003ABC30",
     "mode": "N",
     "assembler": "default"
+  },
+  {
+    "name": "func_0051BB08",
+    "source": "src/levels/common/func_0051BB08.c",
+    "overlay": "singleplayer/1_veldin",
+    "address": "0x0051BB08",
+    "size": 1096,
+    "flags_from": "func_003EAC88",
+    "mode": "S",
+    "assembler": "ps2as"
   }
 ]
